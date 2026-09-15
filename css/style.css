@@ -20,9 +20,8 @@ body {
 	position: relative;
 	min-height: 100vh;
 	overflow: hidden;
-	background:
-		#07111f url('../public/assets/background/space.webp') center / cover
-		no-repeat;
+	background: #07111f url('../public/assets/background/space.webp') center /
+		cover no-repeat;
 }
 
 .star {
@@ -30,23 +29,23 @@ body {
 	color: #fff;
 	opacity: 0.7;
 }
-
+/* 지구의 위치와 크기 */
 .earth {
 	position: absolute;
-	top: 16px;
-	right: 16px;
-	width: 120px;
+	top: 88px;
+	right: 104px;
+	width: 300px;
 	height: auto;
 	z-index: 6;
 	pointer-events: none;
-	filter: drop-shadow(0 0 14px rgba(120, 190, 255, 0.5));
+	filter: drop-shadow(0 0 18px rgba(120, 190, 255, 0.55));
 }
 
 #status {
 	position: absolute;
-	top: 30px;
+	top: 22px;
 	width: 100%;
-	padding: 0 150px;
+	padding: 0 240px;
 	text-align: center;
 	font-size: 24px;
 	font-weight: 800;
@@ -325,14 +324,14 @@ button:disabled {
 
 @media (max-width: 640px) {
 	.earth {
-		width: 72px;
-		top: 10px;
-		right: 10px;
+		width: 112px;
+		top: 22px;
+		right: 28px;
 	}
 
 	#status {
-		padding: 0 88px;
-		top: 22px;
+		padding: 0 132px;
+		top: 16px;
 		font-size: 16px;
 	}
 
