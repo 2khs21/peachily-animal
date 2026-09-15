@@ -52,15 +52,6 @@ body {
 	z-index: 9;
 }
 
-#count {
-	position: absolute;
-	top: 75px;
-	width: 100%;
-	text-align: center;
-	font-size: 64px;
-	font-weight: 900;
-}
-
 #rocketWrap {
 	position: absolute;
 	left: 50%;
@@ -185,6 +176,66 @@ button {
 #reset {
 	background: #e7edf5;
 	color: #17202a;
+}
+
+.game .widget {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 9;
+	width: 100%;
+	max-width: none;
+	padding: 72px 24px 0;
+	justify-content: flex-start;
+	pointer-events: none;
+	gap: 108px;
+}
+
+.game .widget[hidden] {
+	display: none;
+}
+
+.game .widget:has(#rowOver:not([hidden])) {
+	gap: 16px;
+}
+
+.game .widget .gauge,
+.game .widget .panel {
+	pointer-events: auto;
+	max-width: 760px;
+	width: 100%;
+	flex-shrink: 0;
+}
+
+.game .widget .gauge {
+	align-self: center;
+}
+
+.game .widget .cell {
+	font-size: 36px;
+}
+
+.game .widget .panel {
+	gap: 10px;
+}
+
+.game .widget .equation {
+	font-size: 40px;
+}
+
+.game .widget .term,
+.game .widget .box {
+	min-width: 64px;
+	height: 72px;
+}
+
+.game .widget .copy {
+	font-size: 18px;
+}
+
+.game .controls {
+	z-index: 10;
 }
 
 button:disabled {
@@ -333,6 +384,34 @@ button:disabled {
 		padding: 0 132px;
 		top: 16px;
 		font-size: 16px;
+	}
+
+	.game .widget {
+		padding: 56px 12px 0;
+		gap: 72px;
+	}
+
+	.game .widget:has(#rowOver:not([hidden])) {
+		gap: 12px;
+	}
+
+	.game .widget .equation {
+		font-size: 28px;
+		gap: 6px;
+	}
+
+	.game .widget .term,
+	.game .widget .box {
+		min-width: 48px;
+		height: 56px;
+	}
+
+	.game .widget .copy {
+		font-size: 15px;
+	}
+
+	.game .widget .cell {
+		font-size: 24px;
 	}
 
 	.game {

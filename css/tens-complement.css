@@ -1,0 +1,206 @@
+.widget,
+.widget * {
+	box-sizing: border-box;
+}
+
+.widget {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 36px;
+	width: min(760px, 100%);
+	padding: 32px 20px;
+}
+
+.gauge {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 8px;
+	width: 100%;
+	padding: 10px 8px 8px;
+	border-radius: 18px;
+	border: 4px solid #f5d76e;
+	background: #102033;
+}
+
+.row {
+	display: grid;
+	grid-template-columns: repeat(10, minmax(0, 1fr));
+	gap: 6px;
+	width: 100%;
+}
+
+.row-over {
+	padding: 0;
+}
+
+.row-over[hidden] {
+	display: none;
+}
+
+.unit {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	min-width: 0;
+}
+
+.tick {
+	font-size: 12px;
+	font-weight: 700;
+	line-height: 1;
+	color: #c5d2e3;
+}
+
+.cell {
+	width: 100%;
+	aspect-ratio: 1;
+	display: grid;
+	place-items: center;
+	border-radius: 8px;
+	border: 2px solid rgba(255, 255, 255, 0.12);
+	background: rgba(255, 255, 255, 0.04);
+	font-size: 34px;
+	font-weight: 800;
+	color: #0b2a14;
+}
+
+.cell.base {
+	background: #3fa86a;
+	border-color: #2f8a54;
+}
+
+.cell.added {
+	background: #7dff9a;
+	border-color: #4ad36e;
+}
+
+.cell.warn {
+	border-color: #ff4d4d;
+	box-shadow: inset 0 0 0 2px #ff4d4d;
+	background: rgba(255, 77, 77, 0.12);
+}
+
+.gauge[data-tone='exact'] {
+	border-color: #b6ff4a;
+}
+
+.gauge[data-tone='over'] {
+	border-color: #ff4d4d;
+}
+
+.gauge[data-shake='gauge'] {
+	animation: tank-shake 0.12s infinite alternate;
+}
+
+.panel {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 20px;
+}
+
+.equation {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-size: 56px;
+	font-weight: 800;
+	line-height: 1;
+}
+
+.term,
+.box {
+	display: grid;
+	place-items: center;
+	min-width: 84px;
+	height: 92px;
+	padding: 0 12px;
+	border-radius: 16px;
+}
+
+.box {
+	border: 4px solid #f5d76e;
+	background: #16263a;
+}
+
+.equation[data-tone='exact'] .box {
+	border-color: #b6ff4a;
+}
+
+.equation[data-tone='over'] .box {
+	border-color: #ff4d4d;
+}
+
+.equation.is-wrong .box {
+	animation: tank-shake 0.12s infinite alternate;
+}
+
+.op {
+	color: #c5d2e3;
+}
+
+.copy {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 700;
+	text-align: center;
+}
+
+#confirm {
+	border: 0;
+	border-radius: 14px;
+	padding: 15px 28px;
+	font-size: 20px;
+	font-weight: 800;
+	cursor: pointer;
+	background: #ff5c35;
+	color: white;
+}
+
+#confirm:disabled {
+	opacity: 0.45;
+	cursor: default;
+}
+
+@keyframes tank-shake {
+	from {
+		transform: translateX(-3px);
+	}
+	to {
+		transform: translateX(3px);
+	}
+}
+
+@media (max-width: 640px) {
+	.widget {
+		gap: 24px;
+		padding: 20px 12px;
+	}
+
+	.tick {
+		font-size: 10px;
+	}
+
+	.cell {
+		font-size: 24px;
+		border-radius: 6px;
+	}
+
+	.equation {
+		font-size: 40px;
+		gap: 8px;
+	}
+
+	.term,
+	.box {
+		min-width: 64px;
+		height: 72px;
+	}
+
+	.copy {
+		font-size: 18px;
+	}
+}

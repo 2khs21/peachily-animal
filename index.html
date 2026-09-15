@@ -5,6 +5,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1" />
 		<title>동물 구출 미니게임</title>
 		<link rel="stylesheet" href="css/style.css" />
+		<link rel="stylesheet" href="css/tens-complement.css" />
 	</head>
 	<body>
 		<div class="game" id="game">
@@ -19,7 +20,22 @@
 				alt="지구"
 			/>
 			<div id="status">달의 동물들을 구출하세요</div>
-			<div id="count"></div>
+			<div class="widget" id="widget">
+				<div class="gauge" id="gauge" aria-hidden="true">
+					<div class="row" id="rowMain"></div>
+					<div class="row row-over" id="rowOver" hidden></div>
+				</div>
+				<div class="panel">
+					<div class="equation" id="equation">
+						<span class="term" id="termA">8</span>
+						<span class="op">+</span>
+						<span class="box" id="termB"></span>
+						<span class="op">=</span>
+						<span class="box" id="termSum">8</span>
+					</div>
+					<p class="copy" id="copy">숫자 키패드로 연료를 넣어 주세요</p>
+				</div>
+			</div>
 			<div id="rocketWrap">
 				<div class="rocket" id="rocket">
 					<img
@@ -40,7 +56,7 @@
 			<div id="animals"></div>
 			<div class="controls">
 				<button id="board">태우기</button>
-				<button id="launch">🚀 로켓 발사</button>
+				<button type="button" id="confirm" disabled>확정</button>
 				<button id="reset">다시 준비</button>
 			</div>
 		</div>

@@ -7,20 +7,21 @@ import {
 	renderRemaining,
 	seatPassenger,
 } from './animals.js';
+import { initTensComplement } from './tensComplement.js';
+import { problemAt } from './problems.js';
 
 const IDLE_STATUS = '달의 동물들을 구출하세요';
 
 export function initGame() {
 	const elements = {
 		board: document.querySelector('#board'),
-		launch: document.querySelector('#launch'),
 		reset: document.querySelector('#reset'),
 		rocket: document.querySelector('#rocket'),
 		wrap: document.querySelector('#rocketWrap'),
 		smoke: document.querySelector('#smoke'),
 		game: document.querySelector('#game'),
 		statusEl: document.querySelector('#status'),
-		count: document.querySelector('#count'),
+		widget: document.querySelector('#widget'),
 		animals: document.querySelector('#animals'),
 		windowPassengers: document.querySelector('#windowPassengers'),
 		earth: document.querySelector('#earth'),
@@ -28,7 +29,6 @@ export function initGame() {
 
 	let busy = false;
 	let puffTimer = null;
-	let countdownTimer = null;
 	let timers = [];
 	let rescued = new Set();
 	let boardedId = null;
@@ -54,11 +54,12 @@ export function initGame() {
 	function syncButtons() {
 		if (allRescued()) {
 			elements.board.disabled = true;
-			elements.launch.disabled = true;
-			return;
+		} else {
+			elements.board.disabled = busy || Boolean(boardedId);
 		}
-		elements.board.disabled = busy || Boolean(boardedId);
-		elements.launch.disabled = busy || !boardedId;
+		if (elements.board.disabled && document.activeElement === elements.board) {
+			elements.board.blur();
+		}
 	}
 
 	function setIdleStatus() {
@@ -219,35 +220,21 @@ export function initGame() {
 		didLaunch = false;
 		launchToken += 1;
 		const token = launchToken;
+		fuel.setLocked(true);
 		syncButtons();
-		elements.statusEl.textContent = '카운트다운';
-		let n = 3;
-		elements.count.textContent = n;
+		elements.widget.hidden = true;
+		elements.statusEl.textContent = '엔진 점화! 🔥';
+		elements.rocket.classList.add('ignited');
 
-		countdownTimer = setInterval(() => {
+		for (let i = 0; i < 24; i++) later(puff, i * 40);
+		puffTimer = setInterval(puff, 45);
+
+		later(() => {
 			if (token !== launchToken) return;
-			n--;
-			if (n) {
-				elements.count.textContent = n;
-				return;
-			}
-
-			clearInterval(countdownTimer);
-			countdownTimer = null;
-			elements.count.textContent = '';
-			elements.statusEl.textContent = '엔진 점화! 🔥';
-			elements.rocket.classList.add('ignited');
-
-			for (let i = 0; i < 24; i++) later(puff, i * 40);
-			puffTimer = setInterval(puff, 45);
-
-			later(() => {
-				if (token !== launchToken) return;
-				elements.statusEl.textContent = '발사! 🚀';
-				elements.wrap.classList.add('fly');
-				didLaunch = true;
-			}, 800);
-		}, 700);
+			elements.statusEl.textContent = '발사! 🚀';
+			elements.wrap.classList.add('fly');
+			didLaunch = true;
+		}, 800);
 	}
 
 	function restart() {
@@ -257,8 +244,6 @@ export function initGame() {
 		timers = [];
 		if (puffTimer) clearInterval(puffTimer);
 		puffTimer = null;
-		if (countdownTimer) clearInterval(countdownTimer);
-		countdownTimer = null;
 
 		if (allRescued()) {
 			rescued = new Set();
@@ -285,16 +270,34 @@ export function initGame() {
 		elements.wrap.style.removeProperty('transform');
 		elements.wrap.style.removeProperty('opacity');
 		elements.smoke.innerHTML = '';
-		elements.count.textContent = '';
+		elements.widget.hidden = false;
 		setIdleStatus();
 		syncButtons();
+		fuel.setLocked(allRescued());
+		loadProblem();
 		void elements.wrap.offsetWidth;
+	}
+
+	const fuel = initTensComplement({
+		onConfirm(total) {
+			if (total === 10) start();
+		},
+	});
+
+	function loadProblem() {
+		fuel.setA(problemAt(rescued.size).a);
 	}
 
 	renderRemaining(elements.animals, rescued);
 	syncButtons();
-	elements.board.addEventListener('click', board);
-	elements.launch.addEventListener('click', start);
-	elements.reset.addEventListener('click', restart);
+	loadProblem();
+	elements.board.addEventListener('click', () => {
+		board();
+		elements.board.blur();
+	});
+	elements.reset.addEventListener('click', () => {
+		restart();
+		elements.reset.blur();
+	});
 	elements.wrap.addEventListener('animationend', onWrapAnimationEnd);
 }
