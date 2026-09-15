@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width,initial-scale=1" />
-		<title>로켓 발사 미니게임</title>
+		<title>동물 구출 미니게임</title>
 		<link rel="stylesheet" href="css/style.css" />
 	</head>
 	<body>
@@ -12,7 +12,7 @@
 			<span class="star" style="left: 25%; top: 28%">·</span>
 			<span class="star" style="right: 15%; top: 15%">✧</span>
 			<span class="star" style="right: 28%; top: 34%">✦</span>
-			<div id="status">발사 준비 완료</div>
+			<div id="status">달의 동물들을 구출하세요</div>
 			<div id="count"></div>
 			<div id="rocketWrap">
 				<div class="rocket" id="rocket">
@@ -21,6 +21,7 @@
 						src="public/assets/rocket/roket.png"
 						alt="로켓"
 					/>
+					<div class="window-passengers" id="windowPassengers"></div>
 				</div>
 			</div>
 			<div id="smoke"></div>
@@ -30,7 +31,9 @@
 				<div class="pad-leg right"></div>
 			</div>
 			<div class="ground"></div>
+			<div id="animals"></div>
 			<div class="controls">
+				<button id="board">태우기</button>
 				<button id="launch">🚀 로켓 발사</button>
 				<button id="reset">다시 준비</button>
 			</div>
