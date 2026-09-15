@@ -1,0 +1,215 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family:
+		system-ui,
+		-apple-system,
+		'Noto Sans KR',
+		sans-serif;
+	background: #07111f;
+	color: white;
+}
+
+.game {
+	position: relative;
+	min-height: 100vh;
+	overflow: hidden;
+	background:
+		#07111f url('../public/assets/background/space.webp') center / cover
+		no-repeat;
+}
+
+.star {
+	position: absolute;
+	color: #fff;
+	opacity: 0.7;
+}
+
+#status {
+	position: absolute;
+	top: 30px;
+	width: 100%;
+	text-align: center;
+	font-size: 24px;
+	font-weight: 800;
+}
+
+#count {
+	position: absolute;
+	top: 75px;
+	width: 100%;
+	text-align: center;
+	font-size: 64px;
+	font-weight: 900;
+}
+
+#rocketWrap {
+	position: absolute;
+	left: 50%;
+	bottom: 138px;
+	transform: translateX(-50%);
+	z-index: 3;
+}
+
+.rocket {
+	position: relative;
+	width: 240px;
+	height: 240px;
+	transform-origin: 50% 72%;
+}
+
+.rocket-img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	clip-path: inset(0 0 24% 0);
+}
+
+.ignited .rocket-img {
+	clip-path: none;
+}
+
+.ignited {
+	animation: shake 0.07s infinite alternate;
+}
+
+.pad {
+	position: absolute;
+	left: 50%;
+	bottom: 120px;
+	transform: translateX(-50%);
+	width: 246px;
+	height: 72px;
+	z-index: 2;
+}
+
+.pad-top {
+	position: absolute;
+	top: 0;
+	left: 40px;
+	right: 40px;
+	height: 10px;
+	border-radius: 3px;
+	background: #7d8d9c;
+}
+
+.pad-leg {
+	position: absolute;
+	top: 6px;
+	width: 10px;
+	height: 66px;
+	border-radius: 3px;
+	background: #7d8d9c;
+	transform-origin: 50% 0;
+}
+
+.pad-leg.left {
+	left: 44px;
+	transform: rotate(20deg);
+}
+
+.pad-leg.right {
+	right: 44px;
+	transform: rotate(-20deg);
+}
+
+.ground {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 36vh;
+	min-height: 220px;
+	z-index: 1;
+	pointer-events: none;
+	background: url('../public/assets/background/moon-surface.webp') center
+		bottom / cover no-repeat;
+}
+
+.controls {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 28px;
+	z-index: 8;
+	display: flex;
+	justify-content: center;
+	gap: 12px;
+}
+
+button {
+	border: 0;
+	border-radius: 14px;
+	padding: 15px 22px;
+	font-size: 17px;
+	font-weight: 800;
+	cursor: pointer;
+}
+
+#launch {
+	background: #ff5c35;
+	color: white;
+}
+
+#reset {
+	background: #e7edf5;
+	color: #17202a;
+}
+
+#smoke {
+	position: absolute;
+	inset: 0;
+	z-index: 4;
+	pointer-events: none;
+}
+
+.smoke {
+	position: absolute;
+	border-radius: 50%;
+	background: #d7dbe0;
+	opacity: 0.7;
+	filter: blur(1px);
+	animation: puff 1.6s ease-out forwards;
+}
+
+.fly {
+	animation: fly 3s ease-in forwards;
+}
+
+@keyframes flame {
+	to {
+		transform: scaleY(1.25) scaleX(0.85);
+	}
+}
+
+@keyframes shake {
+	from {
+		transform: translateX(-2px) rotate(-1deg);
+	}
+	to {
+		transform: translateX(2px) rotate(1deg);
+	}
+}
+
+@keyframes fly {
+	0% {
+		bottom: 138px;
+	}
+	15% {
+		bottom: 153px;
+	}
+	100% {
+		bottom: 110vh;
+	}
+}
+
+@keyframes puff {
+	to {
+		transform: translate(var(--x), var(--y)) scaleX(var(--sx)) scaleY(var(--sy));
+		opacity: 0;
+	}
+}
