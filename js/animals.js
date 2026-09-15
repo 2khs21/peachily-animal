@@ -6,93 +6,103 @@ export const ANIMALS = [
 		name: '고양이',
 		particle: '를',
 		side: 'left',
-		x: 28,
-		bottom: 18,
+		row: 'front',
+		x: 27,
+		bottom: 9,
 	},
 	{
 		id: 'dog',
 		name: '강아지',
 		particle: '를',
-		side: 'left',
-		x: 22,
-		bottom: 20,
-	},
-	{
-		id: 'rabbit',
-		name: '토끼',
-		particle: '를',
-		side: 'left',
-		x: 16,
-		bottom: 16.5,
+		side: 'right',
+		row: 'front',
+		x: 27,
+		bottom: 9,
 	},
 	{
 		id: 'fox',
 		name: '여우',
 		particle: '를',
 		side: 'left',
-		x: 10.5,
-		bottom: 19,
+		row: 'front',
+		x: 2,
+		bottom: 9,
+	},
+	{
+		id: 'rabbit',
+		name: '토끼',
+		particle: '를',
+		side: 'left',
+		row: 'back',
+		x: 9,
+		bottom: 13,
 	},
 	{
 		id: 'pig',
 		name: '돼지',
 		particle: '를',
 		side: 'left',
-		x: 5,
-		bottom: 17,
+		row: 'front',
+		x: 15,
+		bottom: 9.4,
 	},
 	{
 		id: 'bear',
 		name: '곰',
 		particle: '을',
-		side: 'right',
-		x: 28,
-		bottom: 18,
+		side: 'left',
+		row: 'back',
+		x: 21,
+		bottom: 13.3,
 	},
 	{
 		id: 'monkey',
 		name: '원숭이',
 		particle: '를',
 		side: 'right',
-		x: 22,
-		bottom: 20,
+		row: 'back',
+		x: 21,
+		bottom: 13.3,
 	},
 	{
 		id: 'sheep',
 		name: '양',
 		particle: '을',
 		side: 'right',
-		x: 16,
-		bottom: 16.5,
+		row: 'front',
+		x: 15,
+		bottom: 9,
 	},
 	{
 		id: 'raccoon',
 		name: '너구리',
 		particle: '를',
 		side: 'right',
-		x: 10.5,
-		bottom: 19,
+		row: 'back',
+		x: 9,
+		bottom: 13,
 	},
 	{
 		id: 'tiger',
 		name: '호랑이',
 		particle: '를',
 		side: 'right',
-		x: 5,
-		bottom: 17,
+		row: 'front',
+		x: 2,
+		bottom: 9,
 	},
 ];
 
 export const BOARD_ORDER = [
 	'cat',
-	'bear',
 	'dog',
+	'bear',
 	'monkey',
-	'rabbit',
-	'sheep',
-	'fox',
-	'raccoon',
 	'pig',
+	'sheep',
+	'rabbit',
+	'raccoon',
+	'fox',
 	'tiger',
 ];
 
@@ -102,7 +112,7 @@ export function animalById(id) {
 
 export function placeGroundAnimal(container, animal) {
 	const el = document.createElement('img');
-	el.className = 'animal';
+	el.className = 'animal ' + (animal.row === 'back' ? 'back' : 'front');
 	el.dataset.id = animal.id;
 	el.src = ASSET(animal.id);
 	el.alt = animal.name;
@@ -115,15 +125,18 @@ export function placeGroundAnimal(container, animal) {
 
 export function renderRemaining(container, rescued) {
 	container.innerHTML = '';
-	for (const animal of ANIMALS) {
-		if (rescued.has(animal.id)) continue;
+	const remaining = ANIMALS.filter((animal) => !rescued.has(animal.id));
+	for (const animal of remaining.filter((animal) => animal.row === 'back')) {
+		placeGroundAnimal(container, animal);
+	}
+	for (const animal of remaining.filter((animal) => animal.row !== 'back')) {
 		placeGroundAnimal(container, animal);
 	}
 }
 
 export function nextToBoard(rescued, boardedId) {
 	return BOARD_ORDER.map(animalById).find(
-		(animal) => animal && !rescued.has(animal.id) && animal.id !== boardedId
+		(animal) => animal && !rescued.has(animal.id) && animal.id !== boardedId,
 	);
 }
 
@@ -147,11 +160,12 @@ export function moveToWindow(game, animalEl, windowEl) {
 		const to = windowEl.getBoundingClientRect();
 		const startLeft = from.left - gameRect.left;
 		const startBottom = gameRect.bottom - from.bottom;
-		const targetSize = to.width * 1.35;
+		const targetSize = to.width;
 		const targetLeft = to.left - gameRect.left + to.width / 2 - targetSize / 2;
 		const targetBottom =
 			gameRect.bottom - (to.top + to.height / 2) - targetSize / 2;
 
+		animalEl.style.zIndex = '8';
 		animalEl.style.right = 'auto';
 		animalEl.style.left = startLeft + 'px';
 		animalEl.style.bottom = startBottom + 'px';

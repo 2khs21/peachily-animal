@@ -124,10 +124,10 @@ export function initGame() {
 		if (t < 0.45) {
 			const k = t / 0.45;
 			const e = 1 - (1 - k) * (1 - k);
-			return lerp(0.42, 1.8, e);
+			return lerp(0.32, 1.25, e);
 		}
 		const k = (t - 0.45) / 0.55;
-		return lerp(1.8, 0.12, k * k);
+		return lerp(1.25, 0.1, k * k);
 	}
 
 	function orbitFrames() {

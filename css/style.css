@@ -14,6 +14,9 @@ body {
 }
 
 .game {
+	--rocket-size: clamp(360px, 32vmin, 520px);
+	--pad-bottom: 120px;
+	--rocket-bottom: calc(var(--pad-bottom) + var(--rocket-size) * 0.06);
 	position: relative;
 	min-height: 100vh;
 	overflow: hidden;
@@ -62,15 +65,15 @@ body {
 #rocketWrap {
 	position: absolute;
 	left: 50%;
-	bottom: 138px;
+	bottom: var(--rocket-bottom);
 	translate: -50% 0;
 	z-index: 3;
 }
 
 .rocket {
 	position: relative;
-	width: 240px;
-	height: 240px;
+	width: var(--rocket-size);
+	height: var(--rocket-size);
 	transform-origin: 50% 72%;
 }
 
@@ -100,40 +103,40 @@ body {
 .pad {
 	position: absolute;
 	left: 50%;
-	bottom: 120px;
+	bottom: var(--pad-bottom);
 	transform: translateX(-50%);
-	width: 246px;
-	height: 72px;
+	width: calc(var(--rocket-size) * 1.025);
+	height: calc(var(--rocket-size) * 0.3);
 	z-index: 2;
 }
 
 .pad-top {
 	position: absolute;
 	top: 0;
-	left: 40px;
-	right: 40px;
-	height: 10px;
+	left: 16%;
+	right: 16%;
+	height: 14%;
 	border-radius: 3px;
 	background: #7d8d9c;
 }
 
 .pad-leg {
 	position: absolute;
-	top: 6px;
-	width: 10px;
-	height: 66px;
+	top: 8%;
+	width: 4%;
+	height: 92%;
 	border-radius: 3px;
 	background: #7d8d9c;
 	transform-origin: 50% 0;
 }
 
 .pad-leg.left {
-	left: 44px;
+	left: 18%;
 	transform: rotate(20deg);
 }
 
 .pad-leg.right {
-	right: 44px;
+	right: 18%;
 	transform: rotate(-20deg);
 }
 
@@ -199,21 +202,31 @@ button:disabled {
 
 .animal {
 	position: absolute;
-	width: clamp(44px, 7vw, 80px);
+	width: clamp(72px, 9.5vw, 140px);
+	aspect-ratio: 1;
 	height: auto;
-	z-index: 5;
+	object-fit: contain;
+	object-position: center bottom;
 	transition:
 		left 0.45s ease-in,
 		bottom 0.45s ease-in,
 		width 0.45s ease-in;
 }
 
+.animal.back {
+	z-index: 5;
+}
+
+.animal.front {
+	z-index: 6;
+}
+
 .window-passengers {
 	position: absolute;
 	left: 50%;
 	top: 31%;
-	width: 52px;
-	height: 52px;
+	width: 21.7%;
+	height: 21.7%;
 	transform: translate(-50%, -50%);
 	border-radius: 50%;
 	overflow: hidden;
@@ -242,9 +255,9 @@ button:disabled {
 .passenger-img {
 	display: block;
 	width: 100%;
-	height: 140%;
-	object-fit: cover;
-	object-position: 50% 12%;
+	height: 100%;
+	object-fit: contain;
+	object-position: 50% 50%;
 }
 
 #smoke {
@@ -293,10 +306,10 @@ button:disabled {
 
 @keyframes fly {
 	0% {
-		bottom: 138px;
+		bottom: var(--rocket-bottom);
 	}
 	15% {
-		bottom: 153px;
+		bottom: calc(var(--rocket-bottom) + 15px);
 	}
 	100% {
 		bottom: 110vh;
@@ -323,23 +336,12 @@ button:disabled {
 		font-size: 16px;
 	}
 
-	.rocket {
-		width: 180px;
-		height: 180px;
-	}
-
-	.window-passengers {
-		width: 40px;
-		height: 40px;
-	}
-
-	.pad {
-		width: 186px;
-		height: 56px;
+	.game {
+		--rocket-size: 180px;
 	}
 
 	.animal {
-		width: clamp(36px, 11vw, 52px);
+		width: clamp(44px, 13vw, 68px);
 	}
 
 	.controls {
