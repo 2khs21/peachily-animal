@@ -23,6 +23,7 @@ export function initGame() {
 		count: document.querySelector('#count'),
 		animals: document.querySelector('#animals'),
 		windowPassengers: document.querySelector('#windowPassengers'),
+		earth: document.querySelector('#earth'),
 	};
 
 	let busy = false;
@@ -33,6 +34,8 @@ export function initGame() {
 	let boardedId = null;
 	let didLaunch = false;
 	let boardToken = 0;
+	let launchToken = 0;
+	let transferAnim = null;
 
 	function later(fn, ms) {
 		const t = setTimeout(fn, ms);
@@ -96,16 +99,133 @@ export function initGame() {
 		);
 	}
 
+	function lerp(a, b, t) {
+		return a + (b - a) * t;
+	}
+
+	function cubicPoint(t, p0, p1, p2, p3) {
+		const u = 1 - t;
+		return (
+			u * u * u * p0 +
+			3 * u * u * t * p1 +
+			3 * u * t * t * p2 +
+			t * t * t * p3
+		);
+	}
+
+	function cubicTangent(t, p0, p1, p2, p3) {
+		const u = 1 - t;
+		return (
+			3 * u * u * (p1 - p0) + 6 * u * t * (p2 - p1) + 3 * t * t * (p3 - p2)
+		);
+	}
+
+	function orbitScale(t) {
+		if (t < 0.45) {
+			const k = t / 0.45;
+			const e = 1 - (1 - k) * (1 - k);
+			return lerp(0.42, 1.8, e);
+		}
+		const k = (t - 0.45) / 0.55;
+		return lerp(1.8, 0.12, k * k);
+	}
+
+	function orbitFrames() {
+		const gameRect = elements.game.getBoundingClientRect();
+		const earthRect = elements.earth.getBoundingClientRect();
+		const size = elements.rocket.offsetWidth;
+		const w = gameRect.width;
+		const h = gameRect.height;
+		const p0 = { x: 0.04 * w, y: 0.78 * h };
+		const p1 = { x: 0.34 * w, y: 0.5 * h };
+		const p2 = { x: 0.58 * w, y: 0.2 * h };
+		const p3 = {
+			x: earthRect.left - gameRect.left + earthRect.width / 2,
+			y: earthRect.top - gameRect.top + earthRect.height / 2,
+		};
+
+		const frames = [];
+		const steps = 24;
+		for (let i = 0; i <= steps; i++) {
+			const t = i / steps;
+			const x = cubicPoint(t, p0.x, p1.x, p2.x, p3.x);
+			const y = cubicPoint(t, p0.y, p1.y, p2.y, p3.y);
+			const tx = cubicTangent(t, p0.x, p1.x, p2.x, p3.x);
+			const ty = cubicTangent(t, p0.y, p1.y, p2.y, p3.y);
+			const angle = (Math.atan2(tx, -ty) * 180) / Math.PI;
+			const scale = orbitScale(t);
+			const opacity = t < 0.82 ? 1 : lerp(1, 0.35, (t - 0.82) / 0.18);
+			frames.push({
+				left: `${x - size / 2}px`,
+				top: `${y - size / 2}px`,
+				transform: `rotate(${angle}deg) scale(${scale})`,
+				opacity: String(opacity),
+				offset: t,
+			});
+		}
+		return frames;
+	}
+
+	function beginTransfer(token) {
+		if (token !== launchToken) return;
+		if (puffTimer) {
+			clearInterval(puffTimer);
+			puffTimer = null;
+		}
+
+		const animal = animalById(boardedId);
+		elements.statusEl.textContent = animal
+			? `${animal.name}${animal.particle} 지구로 이동 중`
+			: '지구로 이동 중';
+
+		if (transferAnim) {
+			transferAnim.cancel();
+			transferAnim = null;
+		}
+
+		elements.rocket.classList.add('transferring');
+		elements.wrap.classList.add('to-earth');
+		elements.wrap.classList.remove('fly');
+		void elements.wrap.offsetWidth;
+
+		transferAnim = elements.wrap.animate(orbitFrames(), {
+			duration: 3200,
+			easing: 'ease-in-out',
+			fill: 'forwards',
+		});
+		transferAnim.onfinish = () => finishTransfer(token);
+	}
+
+	function finishTransfer(token) {
+		if (token !== launchToken) return;
+		const animal = animalById(boardedId);
+		if (animal) {
+			elements.statusEl.textContent = `${animal.name}${animal.particle} 지구에 데려다줬어요!`;
+			return;
+		}
+		elements.statusEl.textContent = '지구에 도착했어요!';
+	}
+
+	function onWrapAnimationEnd(event) {
+		if (event.target !== elements.wrap) return;
+		if (event.animationName === 'fly') {
+			beginTransfer(launchToken);
+		}
+	}
+
 	function start() {
 		if (busy || !boardedId) return;
 		busy = true;
 		didLaunch = false;
+		launchToken += 1;
+		const token = launchToken;
 		syncButtons();
 		elements.statusEl.textContent = '카운트다운';
 		let n = 3;
 		elements.count.textContent = n;
 
 		countdownTimer = setInterval(() => {
+			if (token !== launchToken) return;
 			n--;
 			if (n) {
 				elements.count.textContent = n;
@@ -122,24 +242,17 @@ export function initGame() {
 			puffTimer = setInterval(puff, 45);
 
 			later(() => {
+				if (token !== launchToken) return;
 				elements.statusEl.textContent = '발사! 🚀';
 				elements.wrap.classList.add('fly');
 				didLaunch = true;
 			}, 800);
-
-			later(() => {
-				clearInterval(puffTimer);
-				puffTimer = null;
-				const animal = animalById(boardedId);
-				elements.statusEl.textContent = animal
-					? `${animal.name}${animal.particle} 구출 중! ✨`
-					: '우주를 향해 상승 중! ✨';
-			}, 3600);
 		}, 700);
 	}
 
 	function restart() {
 		boardToken += 1;
+		launchToken += 1;
 		timers.forEach(clearTimeout);
 		timers = [];
 		if (puffTimer) clearInterval(puffTimer);
@@ -153,14 +266,24 @@ export function initGame() {
 			rescued.add(boardedId);
 		}
 
+		if (transferAnim) {
+			transferAnim.cancel();
+			transferAnim = null;
+		}
+		elements.wrap.getAnimations().forEach((anim) => anim.cancel());
+
 		boardedId = null;
 		clearPassenger(elements.windowPassengers);
 		renderRemaining(elements.animals, rescued);
 
 		busy = false;
 		didLaunch = false;
-		elements.rocket.classList.remove('ignited');
-		elements.wrap.classList.remove('fly');
+		elements.rocket.classList.remove('ignited', 'transferring');
+		elements.wrap.classList.remove('fly', 'to-earth');
+		elements.wrap.style.removeProperty('left');
+		elements.wrap.style.removeProperty('top');
+		elements.wrap.style.removeProperty('transform');
+		elements.wrap.style.removeProperty('opacity');
 		elements.smoke.innerHTML = '';
 		elements.count.textContent = '';
 		setIdleStatus();
@@ -173,4 +296,5 @@ export function initGame() {
 	elements.board.addEventListener('click', board);
 	elements.launch.addEventListener('click', start);
 	elements.reset.addEventListener('click', restart);
+	elements.wrap.addEventListener('animationend', onWrapAnimationEnd);
 }
