@@ -72,7 +72,7 @@ export function initGame() {
 		el.classList.add('is-in');
 	}
 
-	function playAnnounce(text, { intro = false } = {}) {
+	function playAnnounce(text, { intro = false, html = false } = {}) {
 		return new Promise((resolve) => {
 			const el = elements.announceEl;
 			let settled = false;
@@ -92,7 +92,8 @@ export function initGame() {
 				finish();
 			};
 
-			el.textContent = text;
+			if (html) el.innerHTML = text;
+			else el.textContent = text;
 			el.hidden = false;
 			el.classList.remove('is-grow', 'is-shrink', 'is-intro');
 			el.classList.toggle('is-intro', intro);
@@ -231,12 +232,12 @@ export function initGame() {
 		if (token !== launchToken) return;
 		const animal = animalById(boardedId);
 		const text = animal
-			? `${animal.name}${animal.particle} 지구에 데려다줬어요!`
+			? `<span><span class="animal-name">${animal.name}</span>${animal.particle} 지구에 데려다줬어요!</span>`
 			: '지구에 도착했어요!';
 		const isLast = rescued.size === 9;
 
 		elements.game.classList.add('is-announcing');
-		playAnnounce(text).then(() => {
+		playAnnounce(text, { html: Boolean(animal) }).then(() => {
 			if (token !== launchToken) return;
 			if (isLast) {
 				showSuccess();
