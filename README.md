@@ -9,6 +9,12 @@
 npx serve .
 ```
 
+성공 화면만 보려면 게임 페이지 콘솔에서:
+
+```js
+location.href = 'success.html';
+```
+
 ---
 
 ## 플레이 흐름
