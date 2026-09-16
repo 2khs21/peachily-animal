@@ -10,9 +10,9 @@ import {
 import { initTensComplement } from './tensComplement.js';
 import { problemAt } from './problems.js';
 
-const IDLE_STATUS = '달의 동물들을 구출하세요';
 const ROCKET_PAUSE_MS = 600;
-const NEXT_ROUND_MS = 1200;
+const ANNOUNCE_HOLD_MS = 3000;
+const INTRO_TEXT = '달의 동물 친구들을 구해주세요!';
 
 export function initGame() {
 	const elements = {
@@ -20,7 +20,7 @@ export function initGame() {
 		wrap: document.querySelector('#rocketWrap'),
 		smoke: document.querySelector('#smoke'),
 		game: document.querySelector('#game'),
-		statusEl: document.querySelector('#status'),
+		announceEl: document.querySelector('#announce'),
 		widget: document.querySelector('#widget'),
 		animals: document.querySelector('#animals'),
 		windowPassengers: document.querySelector('#windowPassengers'),
@@ -61,12 +61,40 @@ export function initGame() {
 		fuel.setLocked(false);
 	}
 
-	function setIdleStatus() {
-		if (allRescued()) {
-			elements.statusEl.textContent = '모두 구출했어요!';
-			return;
-		}
-		elements.statusEl.textContent = IDLE_STATUS;
+	function playAnnounce(text, { intro = false } = {}) {
+		return new Promise((resolve) => {
+			const el = elements.announceEl;
+			let settled = false;
+
+			const finish = () => {
+				if (settled) return;
+				settled = true;
+				el.removeEventListener('animationend', onEnd);
+				el.hidden = true;
+				el.classList.remove('is-grow', 'is-shrink', 'is-intro');
+				el.textContent = '';
+				resolve();
+			};
+
+			const onEnd = (event) => {
+				if (event.animationName !== 'announce-out') return;
+				finish();
+			};
+
+			el.textContent = text;
+			el.hidden = false;
+			el.classList.remove('is-grow', 'is-shrink', 'is-intro');
+			el.classList.toggle('is-intro', intro);
+			void el.offsetWidth;
+			el.classList.add('is-grow');
+			el.addEventListener('animationend', onEnd);
+
+			later(() => {
+				el.classList.remove('is-grow');
+				el.classList.add('is-shrink');
+				later(finish, 500);
+			}, ANNOUNCE_HOLD_MS);
+		});
 	}
 
 	function board() {
@@ -77,7 +105,6 @@ export function initGame() {
 		busy = true;
 		const token = ++boardToken;
 		hideWidget();
-		elements.statusEl.textContent = `${animal.name}${animal.particle} 태우는 중…`;
 
 		const animalEl = elements.animals.querySelector(`[data-id="${animal.id}"]`);
 		if (!animalEl) {
@@ -92,7 +119,6 @@ export function initGame() {
 				seatPassenger(elements.windowPassengers, animal);
 				boardedId = animal.id;
 				busy = false;
-				setIdleStatus();
 				showWidget();
 			}
 		);
@@ -172,11 +198,6 @@ export function initGame() {
 			puffTimer = null;
 		}
 
-		const animal = animalById(boardedId);
-		elements.statusEl.textContent = animal
-			? `${animal.name}${animal.particle} 지구로 이동 중`
-			: '지구로 이동 중';
-
 		if (transferAnim) {
 			transferAnim.cancel();
 			transferAnim = null;
@@ -198,23 +219,22 @@ export function initGame() {
 	function finishTransfer(token) {
 		if (token !== launchToken) return;
 		const animal = animalById(boardedId);
-		if (animal) {
-			elements.statusEl.textContent = `${animal.name}${animal.particle} 지구에 데려다줬어요!`;
-		} else {
-			elements.statusEl.textContent = '지구에 도착했어요!';
-		}
-		if (rescued.size === 9) {
-			later(() => {
-				if (token !== launchToken) return;
+		const text = animal
+			? `${animal.name}${animal.particle} 지구에 데려다줬어요!`
+			: '지구에 도착했어요!';
+		const isLast = rescued.size === 9;
+
+		elements.game.classList.add('is-announcing');
+		playAnnounce(text).then(() => {
+			if (token !== launchToken) return;
+			if (isLast) {
 				location.href = 'success.html';
-			}, NEXT_ROUND_MS);
-		} else {
-			later(() => {
-				if (token !== launchToken) return;
-				restart();
-				later(board, ROCKET_PAUSE_MS);
-			}, NEXT_ROUND_MS);
-		}
+				return;
+			}
+			restart();
+			elements.game.classList.remove('is-announcing');
+			later(board, ROCKET_PAUSE_MS);
+		});
 	}
 
 	function onWrapAnimationEnd(event) {
@@ -232,7 +252,6 @@ export function initGame() {
 		const token = launchToken;
 		fuel.setLocked(true);
 		elements.widget.hidden = true;
-		elements.statusEl.textContent = '엔진 점화! 🔥';
 		elements.rocket.classList.add('ignited');
 
 		for (let i = 0; i < 24; i++) later(puff, i * 40);
@@ -240,7 +259,6 @@ export function initGame() {
 
 		later(() => {
 			if (token !== launchToken) return;
-			elements.statusEl.textContent = '발사! 🚀';
 			elements.wrap.classList.add('fly');
 			didLaunch = true;
 		}, 800);
@@ -280,7 +298,6 @@ export function initGame() {
 		elements.wrap.style.removeProperty('opacity');
 		elements.smoke.innerHTML = '';
 		hideWidget();
-		setIdleStatus();
 		loadProblem();
 		void elements.wrap.offsetWidth;
 	}
@@ -298,6 +315,6 @@ export function initGame() {
 	renderRemaining(elements.animals, rescued);
 	hideWidget();
 	loadProblem();
-	later(board, ROCKET_PAUSE_MS);
+	playAnnounce(INTRO_TEXT, { intro: true }).then(board);
 	elements.wrap.addEventListener('animationend', onWrapAnimationEnd);
 }

@@ -4,9 +4,9 @@ const HIT_TEN_HOLD_MS = 280;
 const PRESS_MS = 400;
 const COPY = {
 	waitingInput: '숫자 키패드로 연료를 넣어 주세요',
-	fillingFuel: '연료를 채우는 중…',
+	fillingFuel: '연료 채우는 중...',
 	readyToLaunch: '준비 완료! 발사해 볼까요?',
-	retry: '다시 생각해 보세요!',
+	retry: '다시 생각해 보세요',
 };
 
 export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
