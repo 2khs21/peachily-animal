@@ -12,7 +12,7 @@ import { problemAt } from './problems.js';
 
 const ROCKET_PAUSE_MS = 600;
 const ANNOUNCE_HOLD_MS = 3000;
-const INTRO_TEXT = '달의 동물 친구들을 구해주세요!';
+const INTRO_TEXT = '달에 있는 동물 친구들을\n구해 주세요.';
 
 export function initGame() {
 	const elements = {
