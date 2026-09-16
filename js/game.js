@@ -202,9 +202,15 @@ export function initGame() {
 		const animal = animalById(boardedId);
 		if (animal) {
 			elements.statusEl.textContent = `${animal.name}${animal.particle} 지구에 데려다줬어요!`;
-			return;
+		} else {
+			elements.statusEl.textContent = '지구에 도착했어요!';
 		}
-		elements.statusEl.textContent = '지구에 도착했어요!';
+		if (rescued.size === 9) {
+			later(() => {
+				if (token !== launchToken) return;
+				location.href = 'success.html';
+			}, 1200);
+		}
 	}
 
 	function onWrapAnimationEnd(event) {

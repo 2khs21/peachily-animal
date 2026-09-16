@@ -9,7 +9,7 @@ export const PROBLEMS = [
 	{ a: 3 }, // 7번  3 + 7
 	{ a: 2 }, // 8번  2 + 8
 	{ a: 1 }, // 9번  1 + 9
-	{ a: 8 }, // 10번 8 + 2
+	{ a: 3 }, // 10번 8 + 2
 ];
 
 export function problemAt(index) {

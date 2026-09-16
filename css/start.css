@@ -1,0 +1,55 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	font-family:
+		system-ui,
+		-apple-system,
+		'Noto Sans KR',
+		sans-serif;
+	background: #0b1220;
+}
+
+.start {
+	position: relative;
+	min-height: 100vh;
+	min-height: 100dvh;
+	overflow: hidden;
+	background: #0b1220 url('../public/assets/background/help.png') center
+		bottom / cover no-repeat;
+}
+
+.start-btn {
+	position: absolute;
+	left: 50%;
+	bottom: 4.5%;
+	z-index: 2;
+	translate: -50% 0;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 220px;
+	padding: 18px 36px;
+	border-radius: 16px;
+	background: #ffb020;
+	color: #17202a;
+	font-size: 22px;
+	font-weight: 800;
+	text-decoration: none;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.start-btn:focus-visible {
+	outline: 3px solid #fff;
+	outline-offset: 3px;
+}
+
+@media (max-width: 700px) {
+	.start-btn {
+		min-width: 180px;
+		padding: 14px 24px;
+		font-size: 18px;
+	}
+}
