@@ -1,6 +1,7 @@
 const CELL_COUNT = 10;
 const FILL_MS = 420;
 const HIT_TEN_HOLD_MS = 280;
+const PRESS_MS = 400;
 const COPY = {
 	waitingInput: '숫자 키패드로 연료를 넣어 주세요',
 	fillingFuel: '연료를 채우는 중…',
@@ -33,6 +34,7 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		confirmed: false,
 		showRemain: false,
 		fillTimer: null,
+		pressTimer: null,
 		locked: false,
 	};
 
@@ -155,6 +157,14 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		}
 	}
 
+	function stopPress() {
+		if (state.pressTimer) {
+			clearTimeout(state.pressTimer);
+			state.pressTimer = null;
+		}
+		launchBtn.classList.remove('is-pressing');
+	}
+
 	function clearHitTen() {
 		gauge.classList.remove('is-hit-ten');
 		equation.classList.remove('is-hit-ten');
@@ -170,6 +180,7 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 
 	function resetInput() {
 		stopFill();
+		stopPress();
 		clearHitTen();
 		state.status = 'waitingInput';
 		state.b = null;
@@ -231,9 +242,19 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		if (state.locked || state.status !== 'readyToLaunch' || sum() !== 10) {
 			return;
 		}
-		state.confirmed = true;
-		render();
-		if (onConfirm) onConfirm(10);
+		if (state.pressTimer) return;
+
+		launchBtn.classList.add('is-pressing');
+		state.pressTimer = setTimeout(() => {
+			state.pressTimer = null;
+			if (state.locked || state.status !== 'readyToLaunch' || sum() !== 10) {
+				launchBtn.classList.remove('is-pressing');
+				return;
+			}
+			state.confirmed = true;
+			render();
+			if (onConfirm) onConfirm(10);
+		}, PRESS_MS);
 	}
 
 	function digitFromEvent(event) {
@@ -290,7 +311,12 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 	function setLocked(locked) {
 		state.locked = locked;
 		if (locked) stopFill();
+		if (locked && state.pressTimer) {
+			clearTimeout(state.pressTimer);
+			state.pressTimer = null;
+		}
 		render();
+		if (locked) launchBtn.classList.remove('is-pressing');
 	}
 
 	gauge.addEventListener('animationend', (event) => {
