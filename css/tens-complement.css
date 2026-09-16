@@ -86,6 +86,7 @@
 
 .cell.remain {
 	border-color: #f5d76e;
+	border-width: 6px;
 }
 
 .gauge[data-tone='exact'] {
