@@ -8,7 +8,7 @@ export const ANIMALS = [
 		side: 'left',
 		row: 'front',
 		x: 34,
-		bottom: 15.5,
+		bottom: 13,
 	},
 	{
 		id: 'dog',
@@ -16,7 +16,7 @@ export const ANIMALS = [
 		particle: '를',
 		side: 'right',
 		row: 'front',
-		x: 34,
+		x: 32,
 		bottom: 14,
 	},
 	{
@@ -25,8 +25,8 @@ export const ANIMALS = [
 		particle: '를',
 		side: 'left',
 		row: 'front',
-		x: 10,
-		bottom: 14,
+		x: 9,
+		bottom: 12,
 	},
 	{
 		id: 'rabbit',
@@ -44,7 +44,7 @@ export const ANIMALS = [
 		side: 'left',
 		row: 'front',
 		x: 21.5,
-		bottom: 14.5,
+		bottom: 12,
 	},
 	{
 		id: 'bear',
@@ -61,7 +61,7 @@ export const ANIMALS = [
 		particle: '를',
 		side: 'right',
 		row: 'back',
-		x: 28,
+		x: 26,
 		bottom: 21,
 	},
 	{
@@ -70,8 +70,8 @@ export const ANIMALS = [
 		particle: '을',
 		side: 'right',
 		row: 'front',
-		x: 22.5,
-		bottom: 15,
+		x: 21,
+		bottom: 14,
 	},
 	{
 		id: 'raccoon',
@@ -79,7 +79,7 @@ export const ANIMALS = [
 		particle: '를',
 		side: 'right',
 		row: 'back',
-		x: 16,
+		x: 15,
 		bottom: 19,
 	},
 	{
@@ -88,8 +88,8 @@ export const ANIMALS = [
 		particle: '를',
 		side: 'right',
 		row: 'front',
-		x: 9,
-		bottom: 15.5,
+		x: 7.5,
+		bottom: 14,
 	},
 ];
 
