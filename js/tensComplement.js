@@ -253,6 +253,13 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		}
 
 		if (state.status === 'readyToLaunch') {
+			if (sum() === 10) {
+				if (event.key === 'Enter') {
+					event.preventDefault();
+					confirm();
+				}
+				return;
+			}
 			if (event.key === 'Backspace') {
 				event.preventDefault();
 				resetInput();
