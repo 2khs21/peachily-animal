@@ -131,14 +131,17 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		termSum.textContent = String(total);
 
 		const currentTone = tone();
+		const shaking =
+			(state.status === 'fillingFuel' && currentTone === 'over') ||
+			isWrongFeedback(total);
 		gauge.dataset.tone = currentTone;
-		if (state.status === 'fillingFuel' && currentTone === 'over') {
+		if (shaking) {
 			gauge.dataset.shake = 'gauge';
 		} else {
 			delete gauge.dataset.shake;
 		}
 		equation.dataset.tone = currentTone;
-		equation.classList.toggle('is-wrong', isWrongFeedback(total));
+		equation.classList.toggle('is-wrong', shaking);
 
 		copyEl.textContent = copyText();
 		const canLaunch =
