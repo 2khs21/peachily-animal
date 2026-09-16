@@ -98,6 +98,9 @@ body {
 	width: calc(var(--rocket-size) * 1.025);
 	height: calc(var(--rocket-size) * 0.3);
 	z-index: 2;
+	transition:
+		opacity 0.4s ease,
+		visibility 0.4s ease;
 }
 
 .pad-top {
@@ -141,6 +144,9 @@ body {
 	pointer-events: none;
 	background: url('../public/assets/background/moon-surface.webp') center
 		bottom / cover no-repeat;
+	transition:
+		opacity 0.4s ease,
+		visibility 0.4s ease;
 }
 
 .controls {
@@ -254,6 +260,9 @@ button:disabled {
 	inset: 0;
 	z-index: 5;
 	pointer-events: none;
+	transition:
+		opacity 0.4s ease,
+		visibility 0.4s ease;
 }
 
 .animal {
@@ -343,6 +352,14 @@ button:disabled {
 	translate: none;
 	z-index: 7;
 	transform-origin: 50% 50%;
+}
+
+#rocketWrap.to-earth ~ .pad,
+#rocketWrap.to-earth ~ .ground,
+#rocketWrap.to-earth ~ #animals {
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
 }
 
 @keyframes flame {
