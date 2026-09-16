@@ -31,8 +31,9 @@ body {
 	text-align: center;
 	color: #fff;
 	text-shadow:
-		0 2px 0 rgba(40, 90, 140, 0.25),
-		0 8px 18px rgba(20, 70, 120, 0.45);
+		0 0 6px #07111f,
+		0 2px 0 #07111f,
+		0 4px 10px rgba(0, 0, 0, 0.85);
 }
 
 .copy h1 {
