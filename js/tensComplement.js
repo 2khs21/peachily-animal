@@ -1,5 +1,6 @@
 const CELL_COUNT = 10;
 const FILL_MS = 420;
+const HIT_TEN_HOLD_MS = 280;
 const COPY = {
 	waitingInput: '숫자 키패드로 연료를 넣어 주세요',
 	fillingFuel: '연료를 채우는 중…',
@@ -77,7 +78,7 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		}
 
 		if (position <= total) {
-			cell.classList.add('added');
+			cell.classList.add(position > CELL_COUNT ? 'excess' : 'added');
 			cell.textContent = String(position - a);
 			return;
 		}
@@ -142,12 +143,27 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 	function stopFill() {
 		if (state.fillTimer) {
 			clearInterval(state.fillTimer);
+			clearTimeout(state.fillTimer);
 			state.fillTimer = null;
 		}
 	}
 
+	function clearHitTen() {
+		gauge.classList.remove('is-hit-ten');
+		equation.classList.remove('is-hit-ten');
+	}
+
+	function triggerHitTen() {
+		clearHitTen();
+		void gauge.offsetWidth;
+		void equation.offsetWidth;
+		gauge.classList.add('is-hit-ten');
+		equation.classList.add('is-hit-ten');
+	}
+
 	function resetInput() {
 		stopFill();
+		clearHitTen();
 		state.status = 'waitingInput';
 		state.b = null;
 		state.added = 0;
@@ -159,11 +175,29 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		if (state.b == null) return;
 
 		state.added += 1;
-		if (state.added >= state.b) {
+		const total = a + state.added;
+		const moreToFill = state.added < state.b;
+
+		if (!moreToFill) {
 			stopFill();
 			state.status = 'readyToLaunch';
 		}
+
 		render();
+
+		if (total !== 10) return;
+
+		triggerHitTen();
+		if (!moreToFill) return;
+
+		stopFill();
+		state.fillTimer = setTimeout(() => {
+			if (state.status !== 'fillingFuel' || state.b == null) return;
+			stepFill();
+			if (state.status === 'fillingFuel') {
+				state.fillTimer = setInterval(stepFill, FILL_MS);
+			}
+		}, FILL_MS + HIT_TEN_HOLD_MS);
 	}
 
 	function startFill(digit) {
@@ -171,6 +205,7 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		state.b = digit;
 		state.added = 0;
 		state.confirmed = false;
+		clearHitTen();
 		render();
 		state.fillTimer = setInterval(stepFill, FILL_MS);
 	}
@@ -235,6 +270,16 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		}
 	}
 
+	gauge.addEventListener('animationend', (event) => {
+		if (event.target !== gauge) return;
+		if (event.animationName === 'hit-ten-glow') {
+			gauge.classList.remove('is-hit-ten');
+		}
+	});
+	equation.addEventListener('animationend', (event) => {
+		if (event.animationName !== 'hit-ten-glow') return;
+		equation.classList.remove('is-hit-ten');
+	});
 	confirmBtn.addEventListener('click', confirm);
 	document.addEventListener('keydown', onKeyDown, true);
 	render();
