@@ -31,6 +31,7 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		b: null,
 		added: 0,
 		confirmed: false,
+		showRemain: false,
 		fillTimer: null,
 		locked: false,
 	};
@@ -83,8 +84,8 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 			return;
 		}
 
-		if (state.confirmed && total < 10) {
-			cell.classList.add('warn');
+		if (state.showRemain && total < 10) {
+			cell.classList.add('remain');
 		}
 	}
 
@@ -101,9 +102,16 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		}
 	}
 
+	function isWrongFeedback(total) {
+		if (total < 10) return state.showRemain;
+		if (total > 10) return state.status === 'readyToLaunch';
+		return false;
+	}
+
 	function copyText() {
+		if (isWrongFeedback(sum())) return COPY.retry;
 		if (state.status === 'readyToLaunch' && sum() !== 10) {
-			return COPY.retry;
+			return COPY.fillingFuel;
 		}
 		return COPY[state.status];
 	}
@@ -128,10 +136,7 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 			delete gauge.dataset.shake;
 		}
 		equation.dataset.tone = currentTone;
-		equation.classList.toggle(
-			'is-wrong',
-			state.status === 'readyToLaunch' && total !== 10
-		);
+		equation.classList.toggle('is-wrong', isWrongFeedback(total));
 
 		copyEl.textContent = copyText();
 		confirmBtn.disabled = state.locked || state.status !== 'readyToLaunch';
@@ -168,6 +173,7 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		state.b = null;
 		state.added = 0;
 		state.confirmed = false;
+		state.showRemain = false;
 		render();
 	}
 
@@ -184,6 +190,14 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		}
 
 		render();
+
+		if (!moreToFill && total < 10) {
+			state.fillTimer = setTimeout(() => {
+				if (state.status !== 'readyToLaunch') return;
+				state.showRemain = true;
+				render();
+			}, FILL_MS);
+		}
 
 		if (total !== 10) return;
 
@@ -205,6 +219,7 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		state.b = digit;
 		state.added = 0;
 		state.confirmed = false;
+		state.showRemain = false;
 		clearHitTen();
 		render();
 		state.fillTimer = setInterval(stepFill, FILL_MS);

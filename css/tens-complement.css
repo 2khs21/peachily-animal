@@ -84,10 +84,8 @@
 	color: #4a1010;
 }
 
-.cell.warn {
-	border-color: #ff4d4d;
-	box-shadow: inset 0 0 0 2px #ff4d4d;
-	background: rgba(255, 77, 77, 0.12);
+.cell.remain {
+	border-color: #f5d76e;
 }
 
 .gauge[data-tone='exact'] {
