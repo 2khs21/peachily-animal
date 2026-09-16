@@ -235,8 +235,9 @@ button {
 }
 
 .game .widget {
-	--widget-pad-top: 200px;
+	--widget-pad-top: 160px;
 	--fuel-gap: 80px;
+	--gauge-max: 640px;
 	container-type: inline-size;
 	position: absolute;
 	top: 0;
@@ -258,17 +259,26 @@ button {
 .game .widget .gauge,
 .game .widget .panel {
 	pointer-events: auto;
-	max-width: 980px;
+	max-width: var(--gauge-max);
 	width: 100%;
 	flex-shrink: 0;
 }
 
 .game .widget .gauge {
 	align-self: center;
+	gap: 4px;
+}
+
+.game .widget .unit {
+	gap: 2px;
+}
+
+.game .widget .tick {
+	font-size: 12px;
 }
 
 .game .widget .cell {
-	font-size: 48px;
+	font-size: 32px;
 }
 
 .game .widget .panel {
@@ -277,19 +287,20 @@ button {
 	right: 0;
 	margin-inline: auto;
 	top: calc(
-		var(--widget-pad-top) + 42px + ((100cqi - 78px) / 10) + var(--fuel-gap)
+		var(--widget-pad-top) + 40px +
+			((min(100cqi, var(--gauge-max)) - 78px) / 10) + var(--fuel-gap)
 	);
 	gap: 10px;
 }
 
 .game .widget .equation {
-	font-size: 78px;
+	font-size: 52px;
 }
 
 .game .widget .term,
 .game .widget .box {
-	min-width: 86px;
-	height: 94px;
+	min-width: 62px;
+	height: 70px;
 }
 
 .game .widget .copy {
@@ -299,7 +310,7 @@ button {
 	right: 0;
 	margin: 0;
 	padding: 0 32px;
-	font-size: 42px;
+	font-size: 28px;
 	font-weight: 800;
 	line-height: 1.25;
 	transform: translateY(-100%);
@@ -500,29 +511,33 @@ button:disabled {
 	}
 
 	.game .widget {
-		--widget-pad-top: 104px;
+		--widget-pad-top: 80px;
 		--fuel-gap: 80px;
 		padding: var(--widget-pad-top) 12px 0;
 	}
 
 	.game .widget .equation {
-		font-size: 36px;
+		font-size: 26px;
 		gap: 6px;
 	}
 
 	.game .widget .term,
 	.game .widget .box {
-		min-width: 62px;
-		height: 72px;
+		min-width: 48px;
+		height: 56px;
 	}
 
 	.game .widget .copy {
 		padding: 0 24px;
-		font-size: 24px;
+		font-size: 18px;
 	}
 
 	.game .widget .cell {
-		font-size: 32px;
+		font-size: 22px;
+	}
+
+	.game .widget .tick {
+		font-size: 9px;
 	}
 
 	.game {
