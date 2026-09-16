@@ -269,7 +269,7 @@ button:disabled {
 
 .animal {
 	position: absolute;
-	width: clamp(72px, 9.5vw, 140px);
+	width: 156px;
 	aspect-ratio: 1;
 	height: auto;
 	object-fit: contain;
