@@ -173,14 +173,22 @@
 }
 
 #launch {
-	border: 0;
-	border-radius: 14px;
-	padding: 15px 28px;
-	font-size: 20px;
+	border: 3px solid #940000;
+	border-radius: 36px;
+	padding: 18px 32px;
+	min-width: 360px;
+	min-height: 148px;
+	font-size: 96px;
 	font-weight: 800;
+	letter-spacing: 0.04em;
+	line-height: 1;
 	cursor: pointer;
-	background: #ff5c35;
+	background: #e24a24;
 	color: white;
+	box-shadow:
+		0 14px 0 #6b0000,
+		0 28px 18px rgba(0, 0, 0, 0.28),
+		0 36px 48px rgba(0, 0, 0, 0.55);
 }
 
 #launch[hidden] {
@@ -278,5 +286,13 @@
 
 	.copy {
 		font-size: 18px;
+	}
+
+	#launch {
+		padding: 12px 20px;
+		min-width: 260px;
+		min-height: 104px;
+		font-size: 68px;
+		border-radius: 28px;
 	}
 }
