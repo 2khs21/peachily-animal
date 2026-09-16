@@ -128,7 +128,10 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 
 		termA.textContent = String(a);
 		termB.textContent = state.b == null ? '' : String(state.b);
-		termSum.textContent = String(total);
+		const counting = state.added > 0;
+		termSum.textContent = counting ? String(total) : '10';
+		termSum.classList.toggle('term', !counting);
+		termSum.classList.toggle('box', counting);
 
 		const currentTone = tone();
 		const shaking =
