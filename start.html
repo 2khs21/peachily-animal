@@ -10,5 +10,13 @@
 		<div class="start">
 			<a class="start-btn" href="index.html">구조 시작</a>
 		</div>
+		<script type="module">
+			const btn = document.querySelector('.start-btn');
+			document.addEventListener('keydown', (event) => {
+				if (event.key !== 'Enter' || event.repeat) return;
+				event.preventDefault();
+				btn.click();
+			});
+		</script>
 	</body>
 </html>
