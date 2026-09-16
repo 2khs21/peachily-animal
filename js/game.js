@@ -25,6 +25,7 @@ export function initGame() {
 		animals: document.querySelector('#animals'),
 		windowPassengers: document.querySelector('#windowPassengers'),
 		earth: document.querySelector('#earth'),
+		success: document.querySelector('#success'),
 	};
 
 	let busy = false;
@@ -36,6 +37,7 @@ export function initGame() {
 	let boardToken = 0;
 	let launchToken = 0;
 	let transferAnim = null;
+	let successShown = false;
 
 	function later(fn, ms) {
 		const t = setTimeout(fn, ms);
@@ -59,6 +61,15 @@ export function initGame() {
 	function showWidget() {
 		elements.widget.hidden = false;
 		fuel.setLocked(false);
+	}
+
+	function showSuccess() {
+		if (successShown || !elements.success) return;
+		successShown = true;
+		const el = elements.success;
+		el.hidden = false;
+		void el.offsetWidth;
+		el.classList.add('is-in');
 	}
 
 	function playAnnounce(text, { intro = false } = {}) {
@@ -228,7 +239,7 @@ export function initGame() {
 		playAnnounce(text).then(() => {
 			if (token !== launchToken) return;
 			if (isLast) {
-				location.href = 'success.html';
+				showSuccess();
 				return;
 			}
 			restart();

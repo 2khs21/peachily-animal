@@ -6,6 +6,7 @@
 		<title>동물 구출 미니게임</title>
 		<link rel="stylesheet" href="css/style.css" />
 		<link rel="stylesheet" href="css/tens-complement.css" />
+		<link rel="stylesheet" href="css/success.css" />
 	</head>
 	<body>
 		<div class="game" id="game">
@@ -56,6 +57,14 @@
 			<div id="animals"></div>
 			<div class="controls">
 				<button type="button" id="launch" hidden>발사</button>
+			</div>
+			<div class="success" id="success" hidden>
+				<div class="success-scene" aria-hidden="true"></div>
+				<div class="success-flash" aria-hidden="true"></div>
+				<div class="copy">
+					<h1>동물 친구들 구출 성공!</h1>
+					<p>의찬아, 지후야 고마워!</p>
+				</div>
 			</div>
 		</div>
 		<script type="module" src="js/main.js"></script>
