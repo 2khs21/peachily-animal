@@ -20,7 +20,7 @@
 				alt="지구"
 			/>
 			<div id="status">달의 동물들을 구출하세요</div>
-			<div class="widget" id="widget">
+			<div class="widget" id="widget" hidden>
 				<div class="gauge" id="gauge" aria-hidden="true">
 					<div class="row" id="rowMain"></div>
 					<div class="row row-over" id="rowOver" hidden></div>
@@ -55,9 +55,7 @@
 			<div class="ground"></div>
 			<div id="animals"></div>
 			<div class="controls">
-				<button id="board">태우기</button>
-				<button type="button" id="confirm" disabled>확정</button>
-				<button id="reset">다시 준비</button>
+				<button type="button" id="launch" hidden>발사</button>
 			</div>
 		</div>
 		<script type="module" src="js/main.js"></script>

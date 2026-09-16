@@ -169,19 +169,9 @@ button {
 	cursor: pointer;
 }
 
-#board {
-	background: #ffb020;
-	color: #17202a;
-}
-
 #launch {
 	background: #ff5c35;
 	color: white;
-}
-
-#reset {
-	background: #e7edf5;
-	color: #17202a;
 }
 
 .game .widget {

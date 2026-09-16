@@ -17,7 +17,7 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 	const termSum = document.querySelector('#termSum');
 	const equation = document.querySelector('#equation');
 	const copyEl = document.querySelector('#copy');
-	const confirmBtn = document.querySelector('#confirm');
+	const launchBtn = document.querySelector('#launch');
 
 	let a = clampA(startA);
 
@@ -139,9 +139,11 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		equation.classList.toggle('is-wrong', isWrongFeedback(total));
 
 		copyEl.textContent = copyText();
-		confirmBtn.disabled = state.locked || state.status !== 'readyToLaunch';
-		if (confirmBtn.disabled && document.activeElement === confirmBtn) {
-			confirmBtn.blur();
+		const canLaunch =
+			!state.locked && state.status === 'readyToLaunch' && total === 10;
+		launchBtn.hidden = !canLaunch;
+		if (!canLaunch && document.activeElement === launchBtn) {
+			launchBtn.blur();
 		}
 	}
 
@@ -226,10 +228,12 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 	}
 
 	function confirm() {
-		if (state.locked || state.status !== 'readyToLaunch') return;
+		if (state.locked || state.status !== 'readyToLaunch' || sum() !== 10) {
+			return;
+		}
 		state.confirmed = true;
 		render();
-		if (sum() === 10 && onConfirm) onConfirm(10);
+		if (onConfirm) onConfirm(10);
 	}
 
 	function digitFromEvent(event) {
@@ -280,9 +284,6 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		state.locked = locked;
 		if (locked) stopFill();
 		render();
-		if (confirmBtn.disabled && document.activeElement === confirmBtn) {
-			confirmBtn.blur();
-		}
 	}
 
 	gauge.addEventListener('animationend', (event) => {
@@ -295,7 +296,7 @@ export function initTensComplement({ onConfirm, a: startA = 8 } = {}) {
 		if (event.animationName !== 'hit-ten-glow') return;
 		equation.classList.remove('is-hit-ten');
 	});
-	confirmBtn.addEventListener('click', confirm);
+	launchBtn.addEventListener('click', confirm);
 	document.addEventListener('keydown', onKeyDown, true);
 	render();
 

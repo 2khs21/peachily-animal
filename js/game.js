@@ -11,11 +11,11 @@ import { initTensComplement } from './tensComplement.js';
 import { problemAt } from './problems.js';
 
 const IDLE_STATUS = '달의 동물들을 구출하세요';
+const ROCKET_PAUSE_MS = 600;
+const NEXT_ROUND_MS = 1200;
 
 export function initGame() {
 	const elements = {
-		board: document.querySelector('#board'),
-		reset: document.querySelector('#reset'),
 		rocket: document.querySelector('#rocket'),
 		wrap: document.querySelector('#rocketWrap'),
 		smoke: document.querySelector('#smoke'),
@@ -51,15 +51,14 @@ export function initGame() {
 		return rescued.size === 10;
 	}
 
-	function syncButtons() {
-		if (allRescued()) {
-			elements.board.disabled = true;
-		} else {
-			elements.board.disabled = busy || Boolean(boardedId);
-		}
-		if (elements.board.disabled && document.activeElement === elements.board) {
-			elements.board.blur();
-		}
+	function hideWidget() {
+		elements.widget.hidden = true;
+		fuel.setLocked(true);
+	}
+
+	function showWidget() {
+		elements.widget.hidden = false;
+		fuel.setLocked(false);
 	}
 
 	function setIdleStatus() {
@@ -77,13 +76,12 @@ export function initGame() {
 
 		busy = true;
 		const token = ++boardToken;
-		syncButtons();
+		hideWidget();
 		elements.statusEl.textContent = `${animal.name}${animal.particle} 태우는 중…`;
 
 		const animalEl = elements.animals.querySelector(`[data-id="${animal.id}"]`);
 		if (!animalEl) {
 			busy = false;
-			syncButtons();
 			return;
 		}
 
@@ -94,8 +92,8 @@ export function initGame() {
 				seatPassenger(elements.windowPassengers, animal);
 				boardedId = animal.id;
 				busy = false;
-				elements.statusEl.textContent = '탑승 완료! 발사하세요';
-				syncButtons();
+				setIdleStatus();
+				showWidget();
 			}
 		);
 	}
@@ -209,7 +207,13 @@ export function initGame() {
 			later(() => {
 				if (token !== launchToken) return;
 				location.href = 'success.html';
-			}, 1200);
+			}, NEXT_ROUND_MS);
+		} else {
+			later(() => {
+				if (token !== launchToken) return;
+				restart();
+				later(board, ROCKET_PAUSE_MS);
+			}, NEXT_ROUND_MS);
 		}
 	}
 
@@ -227,7 +231,6 @@ export function initGame() {
 		launchToken += 1;
 		const token = launchToken;
 		fuel.setLocked(true);
-		syncButtons();
 		elements.widget.hidden = true;
 		elements.statusEl.textContent = '엔진 점화! 🔥';
 		elements.rocket.classList.add('ignited');
@@ -276,10 +279,8 @@ export function initGame() {
 		elements.wrap.style.removeProperty('transform');
 		elements.wrap.style.removeProperty('opacity');
 		elements.smoke.innerHTML = '';
-		elements.widget.hidden = false;
+		hideWidget();
 		setIdleStatus();
-		syncButtons();
-		fuel.setLocked(allRescued());
 		loadProblem();
 		void elements.wrap.offsetWidth;
 	}
@@ -295,15 +296,8 @@ export function initGame() {
 	}
 
 	renderRemaining(elements.animals, rescued);
-	syncButtons();
+	hideWidget();
 	loadProblem();
-	elements.board.addEventListener('click', () => {
-		board();
-		elements.board.blur();
-	});
-	elements.reset.addEventListener('click', () => {
-		restart();
-		elements.reset.blur();
-	});
+	later(board, ROCKET_PAUSE_MS);
 	elements.wrap.addEventListener('animationend', onWrapAnimationEnd);
 }
