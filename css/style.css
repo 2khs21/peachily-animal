@@ -175,8 +175,8 @@ button {
 }
 
 .game .widget {
-	--widget-pad-top: 120px;
-	--fuel-gap: 40px;
+	--widget-pad-top: 200px;
+	--fuel-gap: 80px;
 	container-type: inline-size;
 	position: absolute;
 	top: 0;
@@ -198,7 +198,7 @@ button {
 .game .widget .gauge,
 .game .widget .panel {
 	pointer-events: auto;
-	max-width: 760px;
+	max-width: 980px;
 	width: 100%;
 	flex-shrink: 0;
 }
@@ -208,7 +208,7 @@ button {
 }
 
 .game .widget .cell {
-	font-size: 36px;
+	font-size: 48px;
 }
 
 .game .widget .panel {
@@ -223,17 +223,17 @@ button {
 }
 
 .game .widget .equation {
-	font-size: 60px;
+	font-size: 78px;
 }
 
 .game .widget .term,
 .game .widget .box {
-	min-width: 64px;
-	height: 72px;
+	min-width: 86px;
+	height: 94px;
 }
 
 .game .widget .copy {
-	font-size: 18px;
+	font-size: 24px;
 }
 
 .game .controls {
@@ -400,28 +400,28 @@ button:disabled {
 	}
 
 	.game .widget {
-		--widget-pad-top: 56px;
-		--fuel-gap: 50px;
+		--widget-pad-top: 104px;
+		--fuel-gap: 80px;
 		padding: var(--widget-pad-top) 12px 0;
 	}
 
 	.game .widget .equation {
-		font-size: 28px;
+		font-size: 36px;
 		gap: 6px;
 	}
 
 	.game .widget .term,
 	.game .widget .box {
-		min-width: 48px;
-		height: 56px;
+		min-width: 62px;
+		height: 72px;
 	}
 
 	.game .widget .copy {
-		font-size: 15px;
+		font-size: 19px;
 	}
 
 	.game .widget .cell {
-		font-size: 24px;
+		font-size: 32px;
 	}
 
 	.game {
